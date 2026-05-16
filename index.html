@@ -53,7 +53,16 @@
     .mode-dot { width: 6px; height: 6px; border-radius: 50%; }
     .mode-dot.live { background: #5a9e6f; box-shadow: 0 0 6px rgba(90,158,111,.5); }
     .mode-dot.mock { background: var(--amber); box-shadow: 0 0 6px rgba(212,131,74,.4); }
-    .input-pod { width: 100%; max-width: 600px; opacity: 0; animation: riseUp .75s ease 1.18s forwards; }
+
+    /* INPUT POD */
+    .input-pod { width: 100%; max-width: 640px; opacity: 0; animation: riseUp .75s ease 1.18s forwards; }
+
+    /* Tab toggle */
+    .input-tabs { display: flex; gap: 4px; background: rgba(255,200,135,.06); border: 1px solid var(--glass-border); border-radius: 12px; padding: 4px; margin-bottom: 10px; }
+    .tab-btn { flex: 1; background: transparent; border: none; border-radius: 9px; padding: 9px 16px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 400; color: var(--text-mute); cursor: none; transition: background .22s, color .22s; }
+    .tab-btn.active { background: rgba(196,98,45,.22); color: var(--sand); }
+    .tab-btn:hover:not(.active) { color: var(--text-sec); }
+
     .input-glass { background: var(--glass); border: 1px solid var(--glass-border); backdrop-filter: blur(28px) saturate(160%); -webkit-backdrop-filter: blur(28px) saturate(160%); border-radius: 18px; padding: 8px 8px 8px 26px; display: flex; align-items: center; gap: 12px; transition: border-color .35s, box-shadow .35s; }
     .input-glass:focus-within { border-color: rgba(212,131,74,.42); box-shadow: 0 0 0 1px rgba(212,131,74,.14), 0 10px 40px rgba(175,70,25,.13); }
     .niche-input { flex: 1; background: transparent; border: none; outline: none; font-family: 'DM Sans', sans-serif; font-size: 15.5px; font-weight: 300; color: var(--cream); }
@@ -65,6 +74,7 @@
     .gen-btn-inner { position: relative; z-index: 1; display: flex; align-items: center; gap: 9px; }
     .gen-btn svg { transition: transform .28s; }
     .gen-btn:hover svg { transform: translateX(4px); }
+    .input-hint { font-size: 11px; color: var(--text-mute); text-align: left; margin-top: 8px; padding-left: 4px; }
 
     /* LOADING */
     #loading-state { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 80px 24px; }
@@ -80,27 +90,38 @@
     .load-step.done { opacity: .35; }
 
     /* RESULTS */
-    #results-state { display: none; padding: 80px 24px 120px; max-width: 1240px; margin: 0 auto; }
+    #results-state { display: none; padding: 80px 24px 120px; max-width: 1280px; margin: 0 auto; }
     .results-head { text-align: center; margin-bottom: 72px; }
     .results-label { font-size: 10.5px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: var(--amber); margin-bottom: 18px; }
     .results-title { font-family: 'Fraunces', serif; font-size: clamp(38px,5.5vw,68px); font-weight: 300; line-height: .97; letter-spacing: -.025em; color: var(--cream); }
     .results-title em { font-style: italic; color: var(--amber); }
     .results-meta { font-size: 13.5px; font-weight: 300; color: var(--text-sec); margin-top: 14px; }
-    .ideas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(500px,100%),1fr)); gap: 20px; }
+    .ideas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(520px,100%),1fr)); gap: 20px; }
     .idea-card { background: var(--glass); border: 1px solid var(--glass-border); backdrop-filter: blur(28px) saturate(155%); -webkit-backdrop-filter: blur(28px) saturate(155%); border-radius: 22px; padding: 34px 32px; opacity: 0; transform: translateY(28px); transition: opacity .6s, transform .6s, border-color .3s, box-shadow .3s; }
     .idea-card.in { opacity: 1; transform: translateY(0); }
     .idea-card:hover { border-color: rgba(212,131,74,.28); box-shadow: 0 14px 48px rgba(140,55,18,.16); }
     .card-num { font-family: 'Fraunces', serif; font-size: 12px; font-weight: 300; color: var(--amber); letter-spacing: .1em; margin-bottom: 18px; display: flex; align-items: center; gap: 12px; }
     .card-num::after { content: ''; flex: 1; height: 1px; background: rgba(212,131,74,.18); }
-    .card-title { font-family: 'Fraunces', serif; font-size: 21px; font-weight: 400; line-height: 1.22; color: var(--cream); margin-bottom: 26px; }
-    .card-field { margin-bottom: 20px; }
+    .card-title { font-family: 'Fraunces', serif; font-size: 21px; font-weight: 400; line-height: 1.22; color: var(--cream); margin-bottom: 20px; }
+
+    /* Hook callout */
+    .hook-box { background: rgba(196,98,45,.1); border-left: 2px solid var(--terracotta); border-radius: 0 10px 10px 0; padding: 12px 16px; margin-bottom: 24px; }
+    .hook-label { font-size: 9.5px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--terracotta); margin-bottom: 6px; }
+    .hook-text { font-size: 13px; font-weight: 400; font-style: italic; line-height: 1.6; color: var(--cream); }
+
+    /* Stats pill */
+    .stats-pill { display: inline-flex; align-items: center; gap: 6px; background: rgba(212,131,74,.1); border: 1px solid rgba(212,131,74,.2); border-radius: 100px; padding: 4px 12px; font-size: 11px; color: var(--sand); margin-bottom: 20px; }
+
+    .card-field { margin-bottom: 18px; }
     .card-field:last-child { margin-bottom: 0; }
     .f-label { font-size: 10px; font-weight: 500; letter-spacing: .15em; text-transform: uppercase; color: var(--amber); margin-bottom: 7px; display: flex; align-items: center; gap: 7px; }
     .f-label::before { content: ''; width: 3px; height: 3px; border-radius: 50%; background: var(--amber); opacity: .7; }
     .f-text { font-size: 13.5px; font-weight: 300; line-height: 1.7; color: var(--text-sec); }
+    .f-mono { font-size: 12.5px; font-family: 'DM Sans', monospace; line-height: 1.6; color: var(--text-sec); background: rgba(255,200,135,.05); border-radius: 8px; padding: 10px 13px; }
     .f-link { font-size: 12.5px; color: var(--sand); text-decoration: none; word-break: break-all; opacity: .72; transition: opacity .22s; display: inline-flex; align-items: center; gap: 5px; }
     .f-link:after { content: '\2197'; font-size: 10px; }
     .f-link:hover { opacity: 1; }
+
     .reset-btn { display: flex; align-items: center; gap: 8px; margin: 52px auto 0; background: transparent; border: 1px solid var(--glass-border); border-radius: 100px; padding: 13px 26px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 300; color: var(--text-sec); cursor: none; transition: border-color .3s, color .3s; }
     .reset-btn:hover { border-color: rgba(212,131,74,.38); color: var(--sand); }
 
@@ -120,7 +141,6 @@
 <div id="cursor"></div>
 <div class="bg-wrap"></div>
 
-<!-- User header (shown when logged in) -->
 <div id="user-header">
   <div class="u-avatar" id="u-avatar">?</div>
   <span class="u-email" id="u-email"></span>
@@ -130,7 +150,6 @@
 
 <main>
 
-  <!-- SIGN IN (shown while Clerk checks auth / redirecting) -->
   <section id="signin-state">
     <div class="signin-brand">
       <div class="signin-eyebrow">Instagram Content Intelligence</div>
@@ -139,7 +158,6 @@
     </div>
   </section>
 
-  <!-- HERO -->
   <section id="hero-state">
     <p class="hero-eyebrow">Instagram Content Intelligence</p>
     <h1 class="hero-title">
@@ -152,23 +170,47 @@
       <span id="mode-text">Live mode</span>
     </div>
     <div class="input-pod">
-      <form class="input-glass" id="gen-form">
-        <input id="niche-input" class="niche-input" type="text"
-          placeholder="Enter your niche — fitness, indie hacking, home baking…"
-          autocomplete="off">
-        <button type="submit" class="gen-btn">
-          <span class="gen-btn-inner">
-            Generate Ideas
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </span>
-        </button>
+      <!-- Tab toggle -->
+      <div class="input-tabs">
+        <button class="tab-btn active" id="tab-niche" type="button">Search by niche keyword</button>
+        <button class="tab-btn" id="tab-profile" type="button">Use my Instagram profile</button>
+      </div>
+      <!-- Niche form -->
+      <form id="gen-form" style="display:block;">
+        <div class="input-glass">
+          <input id="niche-input" class="niche-input" type="text"
+            placeholder="fitness, indie hacking, home baking, skincare…"
+            autocomplete="off">
+          <button type="submit" class="gen-btn">
+            <span class="gen-btn-inner">
+              Generate Ideas
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </button>
+        </div>
+      </form>
+      <!-- Profile form -->
+      <form id="profile-form" style="display:none;">
+        <div class="input-glass">
+          <input id="profile-input" class="niche-input" type="url"
+            placeholder="https://www.instagram.com/yourusername/"
+            autocomplete="off">
+          <button type="submit" class="gen-btn">
+            <span class="gen-btn-inner">
+              Analyse Profile
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </button>
+        </div>
+        <p class="input-hint">Your profile must be public. We'll detect your niche automatically.</p>
       </form>
     </div>
   </section>
 
-  <!-- LOADING -->
   <section id="loading-state">
     <div class="loader-ring">
       <svg viewBox="0 0 76 76">
@@ -177,24 +219,23 @@
       </svg>
     </div>
     <div class="loader-steps">
-      <div class="load-step" id="ls-1">Scraping Instagram reels&hellip;</div>
-      <div class="load-step" id="ls-2">AI quality filtering&hellip;</div>
-      <div class="load-step" id="ls-3">Generating your 10 ideas&hellip;</div>
+      <div class="load-step" id="ls-1">Expanding hashtags&hellip;</div>
+      <div class="load-step" id="ls-2">Scraping top viral reels&hellip;</div>
+      <div class="load-step" id="ls-3">Filtering by virality (200k+ views)&hellip;</div>
+      <div class="load-step" id="ls-4">Generating your 10 ideas&hellip;</div>
     </div>
   </section>
 
-  <!-- RESULTS -->
   <section id="results-state">
     <div class="results-head">
       <div class="results-label">Your Content Strategy</div>
       <h2 class="results-title">10 Ideas for <em id="r-niche">your niche</em></h2>
-      <p class="results-meta">AI-analysed &middot; Based on viral content patterns</p>
+      <p class="results-meta">Based on 200k+ view reels &middot; Real patterns &middot; Specific hooks</p>
     </div>
     <div class="ideas-grid" id="ideas-grid"></div>
-    <button class="reset-btn" id="reset-btn">&larr; Generate for another niche</button>
+    <button class="reset-btn" id="reset-btn">&larr; Generate again</button>
   </section>
 
-  <!-- ERROR -->
   <section id="error-state">
     <div class="err-icon">&#10005;</div>
     <h2 class="err-title">Something went wrong</h2>
@@ -232,8 +273,7 @@ function show(n) {
   St.loading.style.display = n==='loading' ? 'flex'  : 'none';
   St.results.style.display = n==='results' ? 'block' : 'none';
   St.error.style.display   = n==='error'   ? 'flex'  : 'none';
-  const header = document.getElementById('user-header');
-  header.style.display = ['hero','results','error'].includes(n) ? 'flex' : 'none';
+  document.getElementById('user-header').style.display = ['hero','results','error'].includes(n) ? 'flex' : 'none';
 }
 
 /* ── Clerk init ── */
@@ -252,10 +292,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
-function showSignIn() {
-  show('signin');
-}
-
 function showApp() {
   const user  = window.Clerk.user;
   const email = user?.primaryEmailAddress?.emailAddress || '';
@@ -268,49 +304,79 @@ document.getElementById('u-signout').addEventListener('click', async () => {
   await window.Clerk.signOut();
 });
 
+/* ── Tab toggle ── */
+let activeTab = 'niche';
+document.getElementById('tab-niche').addEventListener('click', () => {
+  activeTab = 'niche';
+  document.getElementById('tab-niche').classList.add('active');
+  document.getElementById('tab-profile').classList.remove('active');
+  document.getElementById('gen-form').style.display = 'block';
+  document.getElementById('profile-form').style.display = 'none';
+});
+document.getElementById('tab-profile').addEventListener('click', () => {
+  activeTab = 'profile';
+  document.getElementById('tab-profile').classList.add('active');
+  document.getElementById('tab-niche').classList.remove('active');
+  document.getElementById('profile-form').style.display = 'block';
+  document.getElementById('gen-form').style.display = 'none';
+});
+
 /* ── Loading steps ── */
 let stTimer;
-function startSteps() {
-  ['ls-1','ls-2','ls-3'].forEach(id => document.getElementById(id).classList.remove('active','done'));
+const STEP_IDS = ['ls-1','ls-2','ls-3','ls-4'];
+function startSteps(isProfile) {
+  document.getElementById('ls-1').textContent = isProfile ? 'Analysing your profile…' : 'Expanding hashtags…';
+  STEP_IDS.forEach(id => document.getElementById(id).classList.remove('active','done'));
   let i = 0;
-  const ids = ['ls-1','ls-2','ls-3'];
   (function next() {
-    if (i > 0) document.getElementById(ids[i-1]).classList.replace('active','done');
-    if (i < ids.length) { document.getElementById(ids[i]).classList.add('active'); i++; stTimer = setTimeout(next, 4000); }
+    if (i > 0) document.getElementById(STEP_IDS[i-1]).classList.replace('active','done');
+    if (i < STEP_IDS.length) { document.getElementById(STEP_IDS[i]).classList.add('active'); i++; stTimer = setTimeout(next, 5000); }
   })();
 }
 function stopSteps() { clearTimeout(stTimer); }
 
-/* ── Main flow ── */
-document.getElementById('gen-form').addEventListener('submit', async e => {
-  e.preventDefault();
-  const niche = document.getElementById('niche-input').value.trim();
-  if (!niche) { document.getElementById('niche-input').focus(); return; }
-
+/* ── Common submit handler ── */
+async function handleSubmit(body, isProfile) {
   show('loading');
-  startSteps();
-
+  startSteps(isProfile);
   try {
     const token = await window.Clerk.session.getToken();
     const res   = await fetch(BACKEND + '/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-      body: JSON.stringify({ niche }),
+      body: JSON.stringify(body),
     });
-
     if (!res.ok) {
       const d = await res.json().catch(() => ({}));
       throw new Error(d.detail || 'Server error ' + res.status + '. Please try again.');
     }
-
-    const { ideas } = await res.json();
-    if (!ideas?.length) throw new Error('No ideas returned. Please try again.');
-    render(niche, ideas);
+    const data = await res.json();
+    if (!data.ideas?.length) throw new Error('No ideas returned. Please try again.');
+    render(data.derived_niche || body.niche || 'your niche', data.ideas);
   } catch (err) {
     stopSteps();
     document.getElementById('err-msg').textContent = err.message || 'Unexpected error.';
     show('error');
   }
+}
+
+/* ── Niche form ── */
+document.getElementById('gen-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const niche = document.getElementById('niche-input').value.trim();
+  if (!niche) { document.getElementById('niche-input').focus(); return; }
+  await handleSubmit({ niche }, false);
+});
+
+/* ── Profile form ── */
+document.getElementById('profile-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const url = document.getElementById('profile-input').value.trim();
+  if (!url || !url.includes('instagram.com/')) {
+    document.getElementById('profile-input').focus();
+    return;
+  }
+  await handleSubmit({ instagram_url: url }, true);
 });
 
 /* ── Render results ── */
@@ -323,11 +389,37 @@ function render(niche, ideas) {
     const card = document.createElement('div');
     card.className = 'idea-card';
     const u = idea.original_viral_reel_url;
+
+    const hookHtml = idea.hook
+      ? `<div class="hook-box"><div class="hook-label">&#128308; Opening Hook</div><div class="hook-text">${esc(idea.hook)}</div></div>`
+      : '';
+
+    const statsHtml = idea.source_reel_stats
+      ? `<div class="stats-pill">&#9650; ${esc(idea.source_reel_stats)}</div>`
+      : '';
+
+    const patternHtml = idea.the_pattern
+      ? `<div class="card-field"><div class="f-label">The Pattern</div><div class="f-mono">${esc(idea.the_pattern)}</div></div>`
+      : '';
+
+    const audioHtml = idea.suggested_audio
+      ? `<div class="card-field"><div class="f-label">Audio</div><p class="f-text">${esc(idea.suggested_audio)}</p></div>`
+      : '';
+
+    const formatHtml = idea.suggested_format
+      ? `<div class="card-field"><div class="f-label">Format</div><p class="f-text">${esc(idea.suggested_format)}</p></div>`
+      : '';
+
     card.innerHTML = `
       <div class="card-num">Idea ${String(i+1).padStart(2,'0')}</div>
       <h3 class="card-title">${esc(idea.title)}</h3>
+      ${hookHtml}
+      ${statsHtml}
       <div class="card-field"><div class="f-label">Concept</div><p class="f-text">${esc(idea.concept_explanation)}</p></div>
-      <div class="card-field"><div class="f-label">Why it works</div><p class="f-text">${esc(idea.why_it_works)}</p></div>
+      ${formatHtml}
+      ${patternHtml}
+      <div class="card-field"><div class="f-label">Why it worked</div><p class="f-text">${esc(idea.why_it_worked)}</p></div>
+      ${audioHtml}
       <div class="card-field"><div class="f-label">Make it authentic</div><p class="f-text">${esc(idea.how_to_make_it_authentic)}</p></div>
       ${u ? `<div class="card-field"><div class="f-label">Source reel</div><a href="${esc(u)}" target="_blank" rel="noopener" class="f-link">${esc(u)}</a></div>` : ''}
     `;
@@ -339,7 +431,11 @@ function render(niche, ideas) {
 }
 
 /* ── Resets ── */
-document.getElementById('reset-btn').addEventListener('click', () => { document.getElementById('niche-input').value = ''; show('hero'); window.scrollTo({top:0,behavior:'smooth'}); });
+document.getElementById('reset-btn').addEventListener('click', () => {
+  document.getElementById('niche-input').value = '';
+  document.getElementById('profile-input').value = '';
+  show('hero'); window.scrollTo({top:0,behavior:'smooth'});
+});
 document.getElementById('err-reset').addEventListener('click', () => { show('hero'); window.scrollTo({top:0,behavior:'smooth'}); });
 
 function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
