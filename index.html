@@ -7,13 +7,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,300;0,9..144,400;1,9..144,200;1,9..144,300;1,9..144,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
-  <script
-    async
-    crossorigin="anonymous"
-    data-clerk-publishable-key="pk_test_Y3VkZGx5LWhhd2stMjIuY2xlcmsuYWNjb3VudHMuZGV2JA"
-    src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"
-    onload="initClerk()">
-  </script>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
@@ -210,6 +203,7 @@
   </section>
 
 </main>
+<script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js" crossorigin="anonymous"></script>
 <script>
 const BACKEND = 'https://viral-reel-scraper.onrender.com';
 
@@ -237,19 +231,18 @@ function show(n) {
   header.style.display = ['hero','results','error'].includes(n) ? 'flex' : 'none';
 }
 
-/* ── Clerk init (called by onload on the script tag) ── */
-async function initClerk() {
-  await window.Clerk.load({
-    afterSignInUrl: window.location.href,
-    afterSignUpUrl: window.location.href,
-  });
+/* ── Clerk init ── */
+(async () => {
+  const clerk = new window.Clerk('pk_test_Y3VkZGx5LWhhd2stMjIuY2xlcmsuYWNjb3VudHMuZGV2JA');
+  await clerk.load({ afterSignInUrl: window.location.href, afterSignUpUrl: window.location.href });
+  window.Clerk = clerk;
 
-  window.Clerk.addListener(({ user }) => {
+  clerk.addListener(({ user }) => {
     if (user) showApp(); else showSignIn();
   });
 
-  if (window.Clerk.user) showApp(); else showSignIn();
-}
+  if (clerk.user) showApp(); else showSignIn();
+})();
 
 function showSignIn() {
   show('signin');
