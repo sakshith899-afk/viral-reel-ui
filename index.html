@@ -130,13 +130,13 @@
 
 <main>
 
-  <!-- SIGN IN -->
+  <!-- SIGN IN (shown while Clerk checks auth / redirecting) -->
   <section id="signin-state">
     <div class="signin-brand">
       <div class="signin-eyebrow">Instagram Content Intelligence</div>
       <h1 class="signin-title">Viral Reel <em>Idea Generator</em></h1>
+      <p id="clerk-loading" style="color:rgba(245,218,180,.35);text-align:center;font-size:13px;margin-top:24px;font-family:'DM Sans',sans-serif;">Checking authentication&hellip;</p>
     </div>
-    <div id="clerk-signin"><p id="clerk-loading" style="color:rgba(245,218,180,.35);text-align:center;font-size:13px;padding:24px 0;font-family:'DM Sans',sans-serif;">Loading sign-in&hellip;</p></div>
   </section>
 
   <!-- HERO -->
@@ -236,12 +236,16 @@ function show(n) {
   header.style.display = ['hero','results','error'].includes(n) ? 'flex' : 'none';
 }
 
-/* ── Clerk init (runs after defer script executes) ── */
+/* ── Clerk init ── */
 document.addEventListener('DOMContentLoaded', async () => {
   try {
-    await window.Clerk.load({ afterSignInUrl: window.location.href, afterSignUpUrl: window.location.href });
-    window.Clerk.addListener(({ user }) => { if (user) showApp(); else showSignIn(); });
-    if (window.Clerk.user) showApp(); else showSignIn();
+    await window.Clerk.load();
+    window.Clerk.addListener(({ user }) => {
+      if (user) showApp();
+      else window.Clerk.redirectToSignIn({ redirectUrl: window.location.href });
+    });
+    if (window.Clerk.user) showApp();
+    else window.Clerk.redirectToSignIn({ redirectUrl: window.location.href });
   } catch (e) {
     const el = document.getElementById('clerk-loading');
     if (el) el.textContent = 'Auth error: ' + (e.message || e);
@@ -250,21 +254,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 function showSignIn() {
   show('signin');
-  window.Clerk.mountSignIn(document.getElementById('clerk-signin'), {
-    appearance: {
-      variables: {
-        colorBackground: '#1c0f05',
-        colorText: '#F5E8D0',
-        colorPrimary: '#C4622D',
-        colorDanger: '#e05a3a',
-        colorInputBackground: 'rgba(0,0,0,0.35)',
-        colorInputText: '#F5E8D0',
-        borderRadius: '10px',
-        fontFamily: '"DM Sans", sans-serif',
-        fontSize: '14px',
-      }
-    }
-  });
 }
 
 function showApp() {
