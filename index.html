@@ -24,7 +24,7 @@
     main { position: relative; z-index: 1; }
 
     /* SIGN-IN */
-    #signin-state { min-height: 100vh; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 60px 24px; }
+    #signin-state { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 24px; }
     .signin-brand { text-align: center; margin-bottom: 36px; }
     .signin-eyebrow { font-size: 10.5px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: var(--amber); margin-bottom: 14px; }
     .signin-title { font-family: 'Fraunces', serif; font-size: 38px; font-weight: 300; line-height: 1.05; letter-spacing: -.025em; color: var(--cream); }
@@ -136,7 +136,7 @@
       <div class="signin-eyebrow">Instagram Content Intelligence</div>
       <h1 class="signin-title">Viral Reel <em>Idea Generator</em></h1>
     </div>
-    <div id="clerk-signin"></div>
+    <div id="clerk-signin"><p id="clerk-loading" style="color:rgba(245,218,180,.35);text-align:center;font-size:13px;padding:24px 0;font-family:'DM Sans',sans-serif;">Loading sign-in&hellip;</p></div>
   </section>
 
   <!-- HERO -->
@@ -233,15 +233,16 @@ function show(n) {
 
 /* ── Clerk init ── */
 (async () => {
-  const clerk = new window.Clerk('pk_test_Y3VkZGx5LWhhd2stMjIuY2xlcmsuYWNjb3VudHMuZGV2JA');
-  await clerk.load({ afterSignInUrl: window.location.href, afterSignUpUrl: window.location.href });
-  window.Clerk = clerk;
-
-  clerk.addListener(({ user }) => {
-    if (user) showApp(); else showSignIn();
-  });
-
-  if (clerk.user) showApp(); else showSignIn();
+  try {
+    const clerk = new window.Clerk('pk_test_Y3VkZGx5LWhhd2stMjIuY2xlcmsuYWNjb3VudHMuZGV2JA');
+    await clerk.load({ afterSignInUrl: window.location.href, afterSignUpUrl: window.location.href });
+    window.Clerk = clerk;
+    clerk.addListener(({ user }) => { if (user) showApp(); else showSignIn(); });
+    if (clerk.user) showApp(); else showSignIn();
+  } catch (e) {
+    const el = document.getElementById('clerk-loading');
+    if (el) el.textContent = 'Failed to load auth: ' + (e.message || e);
+  }
 })();
 
 function showSignIn() {
