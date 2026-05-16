@@ -203,7 +203,12 @@
   </section>
 
 </main>
-<script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js" crossorigin="anonymous"></script>
+<script
+  defer
+  crossorigin="anonymous"
+  data-clerk-publishable-key="pk_test_Y3VkZGx5LWhhd2stMjIuY2xlcmsuYWNjb3VudHMuZGV2JA"
+  src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js">
+</script>
 <script>
 const BACKEND = 'https://viral-reel-scraper.onrender.com';
 
@@ -231,19 +236,17 @@ function show(n) {
   header.style.display = ['hero','results','error'].includes(n) ? 'flex' : 'none';
 }
 
-/* ── Clerk init ── */
-(async () => {
+/* ── Clerk init (runs after defer script executes) ── */
+document.addEventListener('DOMContentLoaded', async () => {
   try {
-    const clerk = new window.Clerk('pk_test_Y3VkZGx5LWhhd2stMjIuY2xlcmsuYWNjb3VudHMuZGV2JA');
-    await clerk.load({ afterSignInUrl: window.location.href, afterSignUpUrl: window.location.href });
-    window.Clerk = clerk;
-    clerk.addListener(({ user }) => { if (user) showApp(); else showSignIn(); });
-    if (clerk.user) showApp(); else showSignIn();
+    await window.Clerk.load({ afterSignInUrl: window.location.href, afterSignUpUrl: window.location.href });
+    window.Clerk.addListener(({ user }) => { if (user) showApp(); else showSignIn(); });
+    if (window.Clerk.user) showApp(); else showSignIn();
   } catch (e) {
     const el = document.getElementById('clerk-loading');
-    if (el) el.textContent = 'Failed to load auth: ' + (e.message || e);
+    if (el) el.textContent = 'Auth error: ' + (e.message || e);
   }
-})();
+});
 
 function showSignIn() {
   show('signin');
