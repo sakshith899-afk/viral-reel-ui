@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Viral Reel Idea Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,300;0,9..144,400;1,9..144,200;1,9..144,300;1,9..144,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:           #120800;
+      --glass:        rgba(248,215,170,.06);
+      --glass-border: rgba(255,200,135,.13);
+      --terracotta:   #C4622D;
+      --sienna:       #7D3220;
+      --sand:         #E8C49A;
+      --cream:        #F5E8D0;
+      --amber:        #D4834A;
+      --text-pri:     #F5E8D0;
+      --text-sec:     rgba(245,218,180,.52);
+      --text-mute:    rgba(245,218,180,.30);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text-pri);
+      min-height: 100vh;
+      cursor: none;
+      overflow-x: hidden;
+    }
+
+    /* ── Cursor ── */
+    #cursor {
+      width: 8px; height: 8px;
+      background: var(--cream);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%,-50%);
+      transition: width .28s ease, height .28s ease;
+      mix-blend-mode: difference;
+    }
+    #cursor.big { width: 38px; height: 38px; }
+
+    /* ── Background ── */
+    .bg-wrap { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+    .bg-wrap::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 65% 55% at 18% 18%, rgba(175,75,28,.20) 0%, transparent 68%),
+        radial-gradient(ellipse 55% 65% at 82% 72%, rgba(115,40,18,.16) 0%, transparent 68%),
+        radial-gradient(ellipse 42% 42% at 62% 10%, rgba(195,115,45,.09) 0%, transparent 60%);
+    }
+    .bg-wrap::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      opacity: .045;
+    }
+
+    main { position: relative; z-index: 1; }
+
+    /* ══════════════════════════════════
+       SETUP GUIDE BANNER
+    ══════════════════════════════════ */
+    .setup-guide {
+      border-bottom: 1px solid var(--glass-border);
+      padding: 0 24px;
+    }
+
+    .guide-toggle {
+      display: flex; align-items: center; justify-content: space-between;
+      max-width: 900px; margin: 0 auto;
+      padding: 18px 0;
+      background: transparent; border: none;
+      width: 100%; cursor: none;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .guide-toggle-left {
+      display: flex; align-items: center; gap: 12px;
+    }
+
+    .guide-badge {
+      font-size: 10px; font-weight: 500;
+      letter-spacing: .14em; text-transform: uppercase;
+      background: rgba(212,131,74,.15);
+      border: 1px solid rgba(212,131,74,.25);
+      color: var(--amber);
+      padding: 4px 10px; border-radius: 100px;
+    }
+
+    .guide-toggle-label {
+      font-size: 13.5px; font-weight: 400;
+      color: var(--text-sec);
+    }
+
+    .guide-arrow {
+      font-size: 12px; color: var(--text-mute);
+      transition: transform .3s ease;
+    }
+    .guide-arrow.open { transform: rotate(180deg); }
+
+    .guide-body {
+      display: none;
+      max-width: 900px; margin: 0 auto;
+      padding-bottom: 36px;
+    }
+    .guide-body.open { display: block; }
+
+    .guide-intro {
+      font-size: 13.5px; font-weight: 300;
+      color: var(--text-sec); line-height: 1.7;
+      margin-bottom: 32px;
+    }
+
+    .guide-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .guide-step {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 14px;
+      padding: 20px 22px;
+    }
+
+    .step-num {
+      font-family: 'Fraunces', serif;
+      font-size: 11px; font-weight: 300;
+      color: var(--amber); letter-spacing: .1em;
+      margin-bottom: 10px;
+    }
+
+    .step-title {
+      font-size: 13.5px; font-weight: 500;
+      color: var(--cream); margin-bottom: 8px;
+    }
+
+    .step-desc {
+      font-size: 12.5px; font-weight: 300;
+      line-height: 1.65; color: var(--text-sec);
+    }
+
+    .step-desc code {
+      font-family: 'Courier New', monospace;
+      font-size: 11.5px;
+      background: rgba(212,131,74,.12);
+      border: 1px solid rgba(212,131,74,.18);
+      color: var(--sand);
+      padding: 1px 5px; border-radius: 4px;
+    }
+
+    .guide-tokens {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      padding: 22px 24px;
+    }
+
+    .tokens-title {
+      font-size: 11px; font-weight: 500;
+      letter-spacing: .14em; text-transform: uppercase;
+      color: var(--amber); margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .tokens-title::before {
+      content: ''; width: 3px; height: 3px;
+      border-radius: 50%; background: var(--amber);
+    }
+
+    .token-row {
+      display: flex; align-items: flex-start;
+      gap: 12px; margin-bottom: 12px;
+    }
+    .token-row:last-child { margin-bottom: 0; }
+
+    .token-key {
+      font-family: 'Courier New', monospace;
+      font-size: 12px; color: var(--sand);
+      background: rgba(212,131,74,.1);
+      border: 1px solid rgba(212,131,74,.18);
+      padding: 3px 8px; border-radius: 5px;
+      white-space: nowrap; flex-shrink: 0;
+    }
+
+    .token-where {
+      font-size: 12.5px; font-weight: 300;
+      color: var(--text-sec); line-height: 1.6;
+    }
+
+    /* ══════════════════════════════════
+       HERO
+    ══════════════════════════════════ */
+    #hero-state {
+      min-height: calc(100vh - 60px);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 80px 24px; text-align: center;
+    }
+
+    .hero-eyebrow {
+      font-size: 10.5px; font-weight: 500;
+      letter-spacing: .18em; text-transform: uppercase;
+      color: var(--amber); margin-bottom: 36px;
+      opacity: 0;
+      animation: riseUp .75s ease .25s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(54px,10.5vw,112px);
+      font-weight: 300;
+      line-height: .94;
+      letter-spacing: -.032em;
+      color: var(--cream);
+      margin-bottom: 28px;
+    }
+    .hero-title .line { display: block; overflow: hidden; }
+    .hero-title .line span {
+      display: block;
+      opacity: 0; transform: translateY(105%);
+      animation: clipReveal .9s cubic-bezier(.16,1,.3,1) forwards;
+    }
+    .hero-title .line:nth-child(1) span { animation-delay: .45s; }
+    .hero-title .line:nth-child(2) span { animation-delay: .62s; }
+    .hero-title em { font-style: italic; color: var(--amber); }
+
+    .hero-tagline {
+      font-size: 15px; font-weight: 300;
+      color: var(--text-sec); letter-spacing: .025em;
+      margin-bottom: 56px;
+      opacity: 0;
+      animation: riseUp .75s ease 1.0s forwards;
+    }
+
+    .input-pod {
+      width: 100%; max-width: 600px;
+      opacity: 0;
+      animation: riseUp .75s ease 1.18s forwards;
+    }
+
+    .input-glass {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(28px) saturate(160%);
+      -webkit-backdrop-filter: blur(28px) saturate(160%);
+      border-radius: 18px;
+      padding: 8px 8px 8px 26px;
+      display: flex; align-items: center; gap: 12px;
+      transition: border-color .35s ease, box-shadow .35s ease;
+    }
+    .input-glass:focus-within {
+      border-color: rgba(212,131,74,.42);
+      box-shadow: 0 0 0 1px rgba(212,131,74,.14), 0 10px 40px rgba(175,70,25,.13);
+    }
+
+    .niche-input {
+      flex: 1; background: transparent; border: none; outline: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15.5px; font-weight: 300;
+      color: var(--cream);
+    }
+    .niche-input::placeholder { color: var(--text-mute); }
+
+    .gen-btn {
+      position: relative; overflow: hidden;
+      background: var(--terracotta);
+      border: none; border-radius: 12px;
+      padding: 15px 30px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13.5px; font-weight: 500;
+      color: var(--cream);
+      cursor: none; white-space: nowrap;
+      letter-spacing: .025em;
+      transition: transform .14s ease;
+      flex-shrink: 0;
+    }
+    .gen-btn::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: var(--sienna);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform .44s cubic-bezier(.77,0,.18,1);
+    }
+    .gen-btn:hover::before { transform: scaleX(1); }
+    .gen-btn:active { transform: scale(.965); }
+    .gen-btn-inner {
+      position: relative; z-index: 1;
+      display: flex; align-items: center; gap: 9px;
+    }
+    .gen-btn svg { transition: transform .28s ease; }
+    .gen-btn:hover svg { transform: translateX(4px); }
+
+    /* ══════════════════════════════════
+       LOADING
+    ══════════════════════════════════ */
+    #loading-state {
+      display: none;
+      flex-direction: column; align-items: center; justify-content: center;
+      min-height: 100vh; padding: 80px 24px;
+    }
+
+    .loader-ring {
+      width: 76px; height: 76px;
+      margin-bottom: 48px;
+    }
+    .loader-ring svg {
+      width: 100%; height: 100%;
+      transform-origin: center;
+      animation: spinRing 1.5s linear infinite;
+    }
+    .loader-ring circle { fill: none; stroke-width: 2; stroke-linecap: round; }
+    .ring-track { stroke: rgba(212,131,74,.14); }
+    .ring-arc {
+      stroke: var(--amber);
+      stroke-dasharray: 213.6;
+      stroke-dashoffset: 160;
+    }
+
+    @keyframes spinRing { to { transform: rotate(360deg); } }
+
+    .loader-steps { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .load-step {
+      font-size: 13px; font-weight: 300;
+      letter-spacing: .04em;
+      color: var(--text-mute); opacity: 0;
+      transition: opacity .5s ease, color .5s ease;
+    }
+    .load-step.active { opacity: 1; color: var(--sand); }
+    .load-step.done   { opacity: .35; }
+
+    /* ══════════════════════════════════
+       RESULTS
+    ══════════════════════════════════ */
+    #results-state {
+      display: none;
+      padding: 80px 24px 120px;
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+
+    .results-head { text-align: center; margin-bottom: 72px; }
+    .results-label {
+      font-size: 10.5px; font-weight: 500;
+      letter-spacing: .18em; text-transform: uppercase;
+      color: var(--amber); margin-bottom: 18px;
+    }
+    .results-title {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(38px,5.5vw,68px);
+      font-weight: 300; line-height: .97;
+      letter-spacing: -.025em;
+      color: var(--cream);
+    }
+    .results-title em { font-style: italic; color: var(--amber); }
+    .results-meta {
+      font-size: 13.5px; font-weight: 300;
+      color: var(--text-sec); margin-top: 14px;
+    }
+
+    .ideas-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(500px,100%),1fr));
+      gap: 20px;
+    }
+
+    .idea-card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(28px) saturate(155%);
+      -webkit-backdrop-filter: blur(28px) saturate(155%);
+      border-radius: 22px;
+      padding: 34px 32px;
+      opacity: 0; transform: translateY(28px);
+      transition: opacity .6s ease, transform .6s ease,
+                  border-color .3s ease, box-shadow .3s ease;
+    }
+    .idea-card.in { opacity: 1; transform: translateY(0); }
+    .idea-card:hover {
+      border-color: rgba(212,131,74,.28);
+      box-shadow: 0 14px 48px rgba(140,55,18,.16);
+    }
+
+    .card-num {
+      font-family: 'Fraunces', serif;
+      font-size: 12px; font-weight: 300;
+      color: var(--amber); letter-spacing: .1em;
+      margin-bottom: 18px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .card-num::after {
+      content: ''; flex: 1; height: 1px;
+      background: rgba(212,131,74,.18);
+    }
+
+    .card-title {
+      font-family: 'Fraunces', serif;
+      font-size: 21px; font-weight: 400;
+      line-height: 1.22; letter-spacing: -.01em;
+      color: var(--cream); margin-bottom: 26px;
+    }
+
+    .card-field { margin-bottom: 20px; }
+    .card-field:last-child { margin-bottom: 0; }
+
+    .f-label {
+      font-size: 10px; font-weight: 500;
+      letter-spacing: .15em; text-transform: uppercase;
+      color: var(--amber); margin-bottom: 7px;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .f-label::before {
+      content: ''; width: 3px; height: 3px;
+      border-radius: 50%; background: var(--amber);
+      opacity: .7; flex-shrink: 0;
+    }
+
+    .f-text {
+      font-size: 13.5px; font-weight: 300;
+      line-height: 1.7; color: var(--text-sec);
+    }
+
+    .f-link {
+      font-size: 12.5px; color: var(--sand);
+      text-decoration: none; word-break: break-all;
+      opacity: .72;
+      transition: opacity .22s ease;
+      display: inline-flex; align-items: center; gap: 5px;
+    }
+    .f-link::after { content: '↗'; font-size: 10px; flex-shrink: 0; }
+    .f-link:hover { opacity: 1; }
+
+    .reset-btn {
+      display: flex; align-items: center; gap: 8px;
+      margin: 52px auto 0;
+      background: transparent;
+      border: 1px solid var(--glass-border);
+      border-radius: 100px; padding: 13px 26px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px; font-weight: 300;
+      color: var(--text-sec); cursor: none;
+      transition: border-color .3s ease, color .3s ease;
+    }
+    .reset-btn:hover { border-color: rgba(212,131,74,.38); color: var(--sand); }
+
+    /* ══════════════════════════════════
+       ERROR
+    ══════════════════════════════════ */
+    #error-state {
+      display: none;
+      flex-direction: column; align-items: center; justify-content: center;
+      min-height: 100vh; padding: 80px 24px; text-align: center;
+    }
+
+    .err-icon {
+      width: 60px; height: 60px;
+      border: 1px solid rgba(196,98,45,.35);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 28px;
+      color: var(--terracotta); font-size: 22px;
+    }
+    .err-title {
+      font-family: 'Fraunces', serif;
+      font-size: 30px; font-weight: 300;
+      color: var(--cream); margin-bottom: 14px;
+    }
+    .err-msg {
+      font-size: 14px; font-weight: 300;
+      color: var(--text-sec); line-height: 1.65;
+      max-width: 460px; margin-bottom: 36px;
+    }
+    .err-msg code {
+      font-family: 'Courier New', monospace; font-size: 12px;
+      background: rgba(212,131,74,.1);
+      border: 1px solid rgba(212,131,74,.18);
+      color: var(--sand); padding: 1px 5px; border-radius: 4px;
+    }
+
+    /* ── Keyframes ── */
+    @keyframes riseUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes clipReveal {
+      from { opacity: 0; transform: translateY(105%); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 580px) {
+      .input-glass { flex-direction: column; padding: 16px; }
+      .gen-btn { width: 100%; justify-content: center; }
+      .ideas-grid { grid-template-columns: 1fr; }
+      .guide-steps { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div class="bg-wrap"></div>
+
+<main>
+
+  <!-- ═══ SETUP GUIDE ═══ -->
+  <div class="setup-guide">
+    <button class="guide-toggle" id="guide-toggle" aria-expanded="false">
+      <div class="guide-toggle-left">
+        <span class="guide-badge">Setup Guide</span>
+        <span class="guide-toggle-label">How to get this app fully running</span>
+      </div>
+      <span class="guide-arrow" id="guide-arrow">▼</span>
+    </button>
+
+    <div class="guide-body" id="guide-body">
+      <p class="guide-intro">
+        This app has two parts: a <strong style="color:var(--sand)">Python backend</strong> that scrapes Instagram and calls AI,
+        and this <strong style="color:var(--sand)">HTML frontend</strong> you're looking at now.
+        Follow the steps below to get everything running in about 5 minutes.
+      </p>
+
+      <div class="guide-steps">
+        <div class="guide-step">
+          <div class="step-num">Step 01</div>
+          <div class="step-title">Clone the backend repo</div>
+          <div class="step-desc">
+            Run in your terminal:<br>
+            <code>git clone https://github.com/sakshith899-afk/viral-reel-scraper</code><br>
+            <code>cd viral-reel-scraper</code>
+          </div>
+        </div>
+
+        <div class="guide-step">
+          <div class="step-num">Step 02</div>
+          <div class="step-title">Create a virtual environment</div>
+          <div class="step-desc">
+            <code>python -m venv venv</code><br>
+            <code>venv\Scripts\activate</code> (Windows)<br>
+            <code>source venv/bin/activate</code> (Mac/Linux)
+          </div>
+        </div>
+
+        <div class="guide-step">
+          <div class="step-num">Step 03</div>
+          <div class="step-title">Install dependencies</div>
+          <div class="step-desc">
+            <code>pip install -r requirements.txt</code><br><br>
+            This installs FastAPI, OpenAI SDK, Apify client, and all other dependencies.
+          </div>
+        </div>
+
+        <div class="guide-step">
+          <div class="step-num">Step 04</div>
+          <div class="step-title">Set up your API keys</div>
+          <div class="step-desc">
+            Copy <code>.env.example</code> to <code>.env</code> and fill in your tokens.
+            See the token guide below for where to get each one.
+          </div>
+        </div>
+
+        <div class="guide-step">
+          <div class="step-num">Step 05</div>
+          <div class="step-title">Start the backend server</div>
+          <div class="step-desc">
+            <code>uvicorn api:app --reload</code><br><br>
+            You should see: <code>Uvicorn running on http://127.0.0.1:8000</code>
+          </div>
+        </div>
+
+        <div class="guide-step">
+          <div class="step-num">Step 06</div>
+          <div class="step-title">Open this file &amp; generate ideas</div>
+          <div class="step-desc">
+            Open this HTML file in your browser. Type your niche (e.g. "fitness routines") and click Generate Ideas. Results appear in ~30–60 seconds.
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-tokens">
+        <div class="tokens-title">API Tokens You Need</div>
+
+        <div class="token-row">
+          <span class="token-key">GITHUB_TOKEN</span>
+          <span class="token-where">
+            <strong style="color:var(--cream)">Free AI (recommended).</strong>
+            Go to GitHub → Settings → Developer settings → Personal access tokens → Fine-grained → Generate new token. No special permissions needed. Gives you free access to GPT-4o via GitHub Models.
+          </span>
+        </div>
+
+        <div class="token-row">
+          <span class="token-key">APIFY_API_TOKEN</span>
+          <span class="token-where">
+            <strong style="color:var(--cream)">For real Instagram scraping.</strong>
+            Sign up at apify.com → Settings → Integrations → API token. Free tier gives ~$5 credit/month. Without this, the app runs on mock data (still useful for testing).
+          </span>
+        </div>
+
+        <div class="token-row">
+          <span class="token-key">OPENAI_API_KEY</span>
+          <span class="token-where">
+            <strong style="color:var(--cream)">Optional — only if not using GITHUB_TOKEN.</strong>
+            platform.openai.com → API Keys → Create new. Costs money per call. Skip this if you have GITHUB_TOKEN set.
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ HERO ═══ -->
+  <section id="hero-state">
+    <p class="hero-eyebrow">Instagram Content Intelligence</p>
+    <h1 class="hero-title">
+      <span class="line"><span>Viral Reel</span></span>
+      <span class="line"><span><em>Idea</em> Generator</span></span>
+    </h1>
+    <p class="hero-tagline">Find what's viral. Create what's next.</p>
+
+    <div class="input-pod">
+      <form class="input-glass" id="gen-form">
+        <input
+          id="niche-input"
+          class="niche-input"
+          type="text"
+          placeholder="Enter your niche — fitness, indie hacking, home baking…"
+          autocomplete="off"
+        >
+        <button type="submit" class="gen-btn">
+          <span class="gen-btn-inner">
+            Generate Ideas
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ═══ LOADING ═══ -->
+  <section id="loading-state">
+    <div class="loader-ring">
+      <svg viewBox="0 0 76 76">
+        <circle class="ring-track" cx="38" cy="38" r="34"/>
+        <circle class="ring-arc"   cx="38" cy="38" r="34"/>
+      </svg>
+    </div>
+    <div class="loader-steps">
+      <div class="load-step" id="ls-1">Scraping Instagram reels…</div>
+      <div class="load-step" id="ls-2">AI quality filtering…</div>
+      <div class="load-step" id="ls-3">Generating your 10 ideas…</div>
+    </div>
+  </section>
+
+  <!-- ═══ RESULTS ═══ -->
+  <section id="results-state">
+    <div class="results-head">
+      <div class="results-label">Your Content Strategy</div>
+      <h2 class="results-title">10 Ideas for <em id="r-niche">your niche</em></h2>
+      <p class="results-meta">Based on verified viral content · AI-analysed</p>
+    </div>
+    <div class="ideas-grid" id="ideas-grid"></div>
+    <button class="reset-btn" id="reset-btn">← Start over</button>
+  </section>
+
+  <!-- ═══ ERROR ═══ -->
+  <section id="error-state">
+    <div class="err-icon">✕</div>
+    <h2 class="err-title">Something went wrong</h2>
+    <p class="err-msg" id="err-msg">
+      Couldn't reach the backend. Make sure <code>uvicorn api:app --reload</code> is running,
+      then refresh this page.
+    </p>
+    <button class="reset-btn" id="err-reset">← Try again</button>
+  </section>
+
+</main>
+
+<script>
+  const API_URL = 'http://localhost:8000/generate';
+
+  /* ── Cursor ── */
+  const cursorEl = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursorEl.style.left = e.clientX + 'px';
+    cursorEl.style.top  = e.clientY + 'px';
+  });
+  function addHover(els) {
+    els.forEach(el => {
+      el.addEventListener('mouseenter', () => cursorEl.classList.add('big'));
+      el.addEventListener('mouseleave', () => cursorEl.classList.remove('big'));
+    });
+  }
+  addHover(document.querySelectorAll('a, button, input'));
+
+  /* ── Guide toggle ── */
+  const guideToggle = document.getElementById('guide-toggle');
+  const guideBody   = document.getElementById('guide-body');
+  const guideArrow  = document.getElementById('guide-arrow');
+
+  guideToggle.addEventListener('click', () => {
+    const open = guideBody.classList.toggle('open');
+    guideArrow.classList.toggle('open', open);
+    guideToggle.setAttribute('aria-expanded', open);
+  });
+
+  /* ── State machine ── */
+  const S = {
+    hero:    document.getElementById('hero-state'),
+    loading: document.getElementById('loading-state'),
+    results: document.getElementById('results-state'),
+    error:   document.getElementById('error-state'),
+  };
+
+  function show(name) {
+    S.hero.style.display    = name === 'hero'    ? 'flex'  : 'none';
+    S.loading.style.display = name === 'loading' ? 'flex'  : 'none';
+    S.results.style.display = name === 'results' ? 'block' : 'none';
+    S.error.style.display   = name === 'error'   ? 'flex'  : 'none';
+  }
+  show('hero');
+
+  /* ── Loading steps ── */
+  const stepIds = ['ls-1','ls-2','ls-3'];
+  let stepTimer;
+
+  function startSteps() {
+    stepIds.forEach(id => {
+      const el = document.getElementById(id);
+      el.classList.remove('active','done');
+    });
+    let i = 0;
+    function next() {
+      if (i > 0) document.getElementById(stepIds[i-1]).classList.replace('active','done');
+      if (i < stepIds.length) {
+        document.getElementById(stepIds[i]).classList.add('active');
+        i++;
+        stepTimer = setTimeout(next, 3000);
+      }
+    }
+    next();
+  }
+  function stopSteps() { clearTimeout(stepTimer); }
+
+  /* ── Form submit ── */
+  const form       = document.getElementById('gen-form');
+  const nicheInput = document.getElementById('niche-input');
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const niche = nicheInput.value.trim();
+    if (!niche) { nicheInput.focus(); return; }
+
+    show('loading');
+    startSteps();
+
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ niche }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || `Server error ${res.status}`);
+      }
+
+      const data = await res.json();
+      if (!data.ideas?.length) throw new Error('No ideas returned. Try a different niche.');
+      renderResults(niche, data.ideas);
+
+    } catch (err) {
+      stopSteps();
+      document.getElementById('err-msg').innerHTML =
+        (err.message || 'Unexpected error.') +
+        '<br><br>Make sure <code>uvicorn api:app --reload</code> is running in the backend folder.';
+      show('error');
+    }
+  });
+
+  /* ── Render results ── */
+  function renderResults(niche, ideas) {
+    stopSteps();
+    document.getElementById('r-niche').textContent = niche;
+    const grid = document.getElementById('ideas-grid');
+    grid.innerHTML = '';
+
+    ideas.forEach((idea, i) => {
+      const card = document.createElement('div');
+      card.className = 'idea-card';
+      card.innerHTML = `
+        <div class="card-num">Idea ${String(i+1).padStart(2,'0')}</div>
+        <h3 class="card-title">${esc(idea.title)}</h3>
+        <div class="card-field">
+          <div class="f-label">Concept</div>
+          <p class="f-text">${esc(idea.concept_explanation)}</p>
+        </div>
+        <div class="card-field">
+          <div class="f-label">Why it works</div>
+          <p class="f-text">${esc(idea.why_it_works)}</p>
+        </div>
+        <div class="card-field">
+          <div class="f-label">Make it authentic</div>
+          <p class="f-text">${esc(idea.how_to_make_it_authentic)}</p>
+        </div>
+        ${idea.original_viral_reel_url ? `
+        <div class="card-field">
+          <div class="f-label">Source reel</div>
+          <a href="${esc(idea.original_viral_reel_url)}" target="_blank" rel="noopener" class="f-link">${esc(idea.original_viral_reel_url)}</a>
+        </div>` : ''}
+      `;
+      grid.appendChild(card);
+      setTimeout(() => {
+        card.classList.add('in');
+        addHover([card]);
+      }, 80 + i * 75);
+    });
+
+    show('results');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* ── Reset ── */
+  document.getElementById('reset-btn').addEventListener('click', () => {
+    nicheInput.value = '';
+    show('hero');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  document.getElementById('err-reset').addEventListener('click', () => {
+    show('hero');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  function esc(str) {
+    const d = document.createElement('div');
+    d.textContent = str ?? '';
+    return d.innerHTML;
+  }
+</script>
+</body>
+</html>
