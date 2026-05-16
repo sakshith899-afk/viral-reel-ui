@@ -7,6 +7,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,300;0,9..144,400;1,9..144,200;1,9..144,300;1,9..144,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <script
+    async
+    crossorigin="anonymous"
+    data-clerk-publishable-key="pk_test_Y3VkZGx5LWhhd2stMjIuY2xlcmsuYWNjb3VudHMuZGV2JA"
+    src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"
+    onload="initClerk()">
+  </script>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
@@ -22,32 +29,25 @@
     .bg-wrap::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 65% 55% at 18% 18%, rgba(175,75,28,.20) 0%, transparent 68%), radial-gradient(ellipse 55% 65% at 82% 72%, rgba(115,40,18,.16) 0%, transparent 68%), radial-gradient(ellipse 42% 42% at 62% 10%, rgba(195,115,45,.09) 0%, transparent 60%); }
     .bg-wrap::after { content: ''; position: absolute; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); opacity: .045; }
     main { position: relative; z-index: 1; }
-    /* SETUP */
-    #setup-state { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 24px; }
-    .setup-card { width: 100%; max-width: 560px; background: var(--glass); border: 1px solid var(--glass-border); backdrop-filter: blur(28px) saturate(160%); -webkit-backdrop-filter: blur(28px) saturate(160%); border-radius: 24px; padding: 44px 40px; }
-    .setup-eyebrow { font-size: 10.5px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: var(--amber); margin-bottom: 12px; }
-    .setup-title { font-family: 'Fraunces', serif; font-size: 32px; font-weight: 300; line-height: 1.1; letter-spacing: -.02em; color: var(--cream); margin-bottom: 10px; }
-    .setup-title em { font-style: italic; color: var(--amber); }
-    .setup-desc { font-size: 13.5px; font-weight: 300; line-height: 1.65; color: var(--text-sec); margin-bottom: 36px; }
-    .field-group { margin-bottom: 20px; }
-    .field-label { font-size: 11px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--amber); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
-    .field-badge { font-size: 9.5px; padding: 2px 8px; border-radius: 100px; letter-spacing: .06em; }
-    .badge-required { background: rgba(212,131,74,.18); color: var(--amber); }
-    .badge-optional { background: rgba(255,255,255,.06); color: var(--text-mute); }
-    .field-input { width: 100%; background: rgba(0,0,0,.25); border: 1px solid var(--glass-border); border-radius: 10px; padding: 13px 16px; font-family: 'Courier New', monospace; font-size: 13px; color: var(--cream); outline: none; transition: border-color .3s, box-shadow .3s; }
-    .field-input::placeholder { color: var(--text-mute); font-family: 'DM Sans', sans-serif; font-size: 13px; }
-    .field-input:focus { border-color: rgba(212,131,74,.45); box-shadow: 0 0 0 1px rgba(212,131,74,.14); }
-    .field-hint { font-size: 11.5px; color: var(--text-mute); margin-top: 6px; line-height: 1.55; }
-    .setup-btn { position: relative; overflow: hidden; width: 100%; background: var(--terracotta); border: none; border-radius: 12px; padding: 16px; margin-top: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; color: var(--cream); cursor: none; transition: transform .14s; }
-    .setup-btn::before { content: ''; position: absolute; inset: 0; background: var(--sienna); transform: scaleX(0); transform-origin: left; transition: transform .44s cubic-bezier(.77,0,.18,1); }
-    .setup-btn:hover::before { transform: scaleX(1); }
-    .setup-btn:active { transform: scale(.98); }
-    .setup-btn span { position: relative; z-index: 1; }
-    .setup-error { display: none; background: rgba(196,98,45,.12); border: 1px solid rgba(196,98,45,.3); border-radius: 8px; padding: 10px 14px; font-size: 12.5px; color: var(--terracotta); margin-top: 14px; line-height: 1.5; }
+
+    /* SIGN-IN */
+    #signin-state { min-height: 100vh; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 60px 24px; }
+    .signin-brand { text-align: center; margin-bottom: 36px; }
+    .signin-eyebrow { font-size: 10.5px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: var(--amber); margin-bottom: 14px; }
+    .signin-title { font-family: 'Fraunces', serif; font-size: 38px; font-weight: 300; line-height: 1.05; letter-spacing: -.025em; color: var(--cream); }
+    .signin-title em { font-style: italic; color: var(--amber); }
+    #clerk-signin { width: 100%; max-width: 440px; }
+
+    /* USER HEADER */
+    #user-header { position: fixed; top: 20px; right: 24px; z-index: 100; display: none; align-items: center; gap: 10px; background: var(--glass); border: 1px solid var(--glass-border); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 100px; padding: 7px 14px 7px 8px; }
+    .u-avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--terracotta); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--cream); flex-shrink: 0; }
+    .u-email { font-size: 12px; color: var(--text-sec); max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .u-divider { width: 1px; height: 14px; background: var(--glass-border); }
+    .u-signout { font-size: 11.5px; color: var(--text-mute); background: none; border: none; cursor: none; padding: 0; transition: color .22s; font-family: 'DM Sans', sans-serif; }
+    .u-signout:hover { color: var(--terracotta); }
+
     /* HERO */
-    .settings-trigger { position: fixed; top: 20px; right: 24px; z-index: 100; background: var(--glass); border: 1px solid var(--glass-border); backdrop-filter: blur(20px); border-radius: 100px; padding: 10px 16px; font-family: 'DM Sans', sans-serif; font-size: 12px; color: var(--text-sec); cursor: none; transition: border-color .3s, color .3s; display: none; }
-    .settings-trigger:hover { border-color: rgba(212,131,74,.35); color: var(--sand); }
-    #hero-state { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 24px; text-align: center; }
+    #hero-state { min-height: 100vh; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 80px 24px; text-align: center; }
     .hero-eyebrow { font-size: 10.5px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: var(--amber); margin-bottom: 36px; opacity: 0; animation: riseUp .75s ease .25s forwards; }
     .hero-title { font-family: 'Fraunces', serif; font-size: clamp(54px, 10.5vw, 112px); font-weight: 300; line-height: .94; letter-spacing: -.032em; color: var(--cream); margin-bottom: 28px; }
     .hero-title .line { display: block; overflow: hidden; }
@@ -72,6 +72,7 @@
     .gen-btn-inner { position: relative; z-index: 1; display: flex; align-items: center; gap: 9px; }
     .gen-btn svg { transition: transform .28s; }
     .gen-btn:hover svg { transform: translateX(4px); }
+
     /* LOADING */
     #loading-state { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 80px 24px; }
     .loader-ring { width: 76px; height: 76px; margin-bottom: 48px; }
@@ -84,6 +85,7 @@
     .load-step { font-size: 13px; font-weight: 300; color: var(--text-mute); opacity: 0; transition: opacity .5s, color .5s; }
     .load-step.active { opacity: 1; color: var(--sand); }
     .load-step.done { opacity: .35; }
+
     /* RESULTS */
     #results-state { display: none; padding: 80px 24px 120px; max-width: 1240px; margin: 0 auto; }
     .results-head { text-align: center; margin-bottom: 72px; }
@@ -108,49 +110,40 @@
     .f-link:hover { opacity: 1; }
     .reset-btn { display: flex; align-items: center; gap: 8px; margin: 52px auto 0; background: transparent; border: 1px solid var(--glass-border); border-radius: 100px; padding: 13px 26px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 300; color: var(--text-sec); cursor: none; transition: border-color .3s, color .3s; }
     .reset-btn:hover { border-color: rgba(212,131,74,.38); color: var(--sand); }
+
     /* ERROR */
     #error-state { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 80px 24px; text-align: center; }
     .err-icon { width: 60px; height: 60px; border: 1px solid rgba(196,98,45,.35); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 28px; color: var(--terracotta); font-size: 22px; }
     .err-title { font-family: 'Fraunces', serif; font-size: 30px; font-weight: 300; color: var(--cream); margin-bottom: 14px; }
     .err-msg { font-size: 14px; font-weight: 300; color: var(--text-sec); line-height: 1.65; max-width: 460px; margin-bottom: 36px; }
+
     @keyframes riseUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes clipReveal { from { opacity: 0; transform: translateY(105%); } to { opacity: 1; transform: translateY(0); } }
-    @media (max-width: 580px) { .input-glass { flex-direction: column; padding: 16px; } .gen-btn { width: 100%; justify-content: center; } .ideas-grid { grid-template-columns: 1fr; } .setup-card { padding: 32px 24px; } }
+    @media (max-width: 580px) { .input-glass { flex-direction: column; padding: 16px; } .gen-btn { width: 100%; justify-content: center; } .ideas-grid { grid-template-columns: 1fr; } #user-header { right: 12px; } .u-email { display: none; } }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
   </style>
 </head>
 <body>
 <div id="cursor"></div>
 <div class="bg-wrap"></div>
-<button class="settings-trigger" id="settings-trigger">&#9881; Settings</button>
+
+<!-- User header (shown when logged in) -->
+<div id="user-header">
+  <div class="u-avatar" id="u-avatar">?</div>
+  <span class="u-email" id="u-email"></span>
+  <div class="u-divider"></div>
+  <button class="u-signout" id="u-signout">Sign out</button>
+</div>
+
 <main>
 
-  <!-- SETUP (shown first time only) -->
-  <section id="setup-state">
-    <div class="setup-card">
-      <div class="setup-eyebrow">One-time setup</div>
-      <h1 class="setup-title">Viral Reel<br><em>Idea Generator</em></h1>
-      <p class="setup-desc">Enter your API keys once. They are saved only in your browser and sent directly to GitHub/Apify — nothing goes through any server.</p>
-
-      <div class="field-group">
-        <div class="field-label">GitHub Token <span class="field-badge badge-required">Required &middot; Free</span></div>
-        <input type="password" class="field-input" id="gh-token-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
-        <div class="field-hint">
-          Get it free at GitHub.com &rarr; Settings &rarr; Developer settings &rarr; Personal access tokens &rarr; Fine-grained &rarr; Generate new token. No special permissions needed. Gives free access to GPT-4o AI.
-        </div>
-      </div>
-
-      <div class="field-group">
-        <div class="field-label">Apify Token <span class="field-badge badge-optional">Optional</span></div>
-        <input type="password" class="field-input" id="apify-token-input" placeholder="apify_api_xxxxxxxxxxxxxxxxxx">
-        <div class="field-hint">
-          Get it at apify.com &rarr; Settings &rarr; Integrations. Free tier available. Without this, the tool uses demo data &mdash; great for testing the AI ideas.
-        </div>
-      </div>
-
-      <button class="setup-btn" id="setup-save-btn"><span>Save &amp; Start &rarr;</span></button>
-      <div class="setup-error" id="setup-error"></div>
+  <!-- SIGN IN -->
+  <section id="signin-state">
+    <div class="signin-brand">
+      <div class="signin-eyebrow">Instagram Content Intelligence</div>
+      <h1 class="signin-title">Viral Reel <em>Idea Generator</em></h1>
     </div>
+    <div id="clerk-signin"></div>
   </section>
 
   <!-- HERO -->
@@ -162,8 +155,8 @@
     </h1>
     <p class="hero-tagline">Find what's viral. Create what's next.</p>
     <div class="mode-pill" id="mode-pill">
-      <span class="mode-dot" id="mode-dot"></span>
-      <span id="mode-text">Loading&hellip;</span>
+      <span class="mode-dot live" id="mode-dot"></span>
+      <span id="mode-text">Live mode</span>
     </div>
     <div class="input-pod">
       <form class="input-glass" id="gen-form">
@@ -218,10 +211,7 @@
 
 </main>
 <script>
-/* ── Config ── */
-const GH_URL      = 'https://models.inference.ai.azure.com/chat/completions';
-const APIFY_RUN   = 'https://api.apify.com/v2/acts/apify~instagram-scraper/runs';
-const APIFY_RUNS  = 'https://api.apify.com/v2/actor-runs';
+const BACKEND = 'https://viral-reel-scraper.onrender.com';
 
 /* ── Cursor ── */
 const cur = document.getElementById('cursor');
@@ -230,54 +220,78 @@ function addHover(els) { els.forEach(el => { el.addEventListener('mouseenter',()
 addHover(document.querySelectorAll('a,button,input'));
 
 /* ── States ── */
-const St = { setup:document.getElementById('setup-state'), hero:document.getElementById('hero-state'), loading:document.getElementById('loading-state'), results:document.getElementById('results-state'), error:document.getElementById('error-state') };
+const St = {
+  signin:  document.getElementById('signin-state'),
+  hero:    document.getElementById('hero-state'),
+  loading: document.getElementById('loading-state'),
+  results: document.getElementById('results-state'),
+  error:   document.getElementById('error-state'),
+};
 function show(n) {
-  St.setup.style.display   = n==='setup'   ? 'flex'  : 'none';
+  St.signin.style.display  = n==='signin'  ? 'flex'  : 'none';
   St.hero.style.display    = n==='hero'    ? 'flex'  : 'none';
   St.loading.style.display = n==='loading' ? 'flex'  : 'none';
   St.results.style.display = n==='results' ? 'block' : 'none';
   St.error.style.display   = n==='error'   ? 'flex'  : 'none';
-  document.getElementById('settings-trigger').style.display = ['hero','results','error'].includes(n) ? 'block' : 'none';
+  const header = document.getElementById('user-header');
+  header.style.display = ['hero','results','error'].includes(n) ? 'flex' : 'none';
 }
 
-/* ── Tokens (localStorage) ── */
-const getT = () => ({ gh: localStorage.getItem('vrig_gh')||'', ap: localStorage.getItem('vrig_ap')||'' });
-const saveT = (gh,ap) => { localStorage.setItem('vrig_gh',gh); ap ? localStorage.setItem('vrig_ap',ap) : localStorage.removeItem('vrig_ap'); };
+/* ── Clerk init (called by onload on the script tag) ── */
+async function initClerk() {
+  await window.Clerk.load({
+    afterSignInUrl: window.location.href,
+    afterSignUpUrl: window.location.href,
+  });
 
-function setModePill(ap) {
-  const dot=document.getElementById('mode-dot'), txt=document.getElementById('mode-text');
-  if (ap) { dot.className='mode-dot live'; txt.textContent='Live scraping + AI ideas'; }
-  else    { dot.className='mode-dot mock'; txt.textContent='Demo mode — add Apify token for live scraping'; }
+  window.Clerk.addListener(({ user }) => {
+    if (user) showApp(); else showSignIn();
+  });
+
+  if (window.Clerk.user) showApp(); else showSignIn();
 }
 
-/* ── Init ── */
-(function(){ const {gh,ap}=getT(); if (!gh) show('setup'); else { show('hero'); setModePill(ap); } })();
+function showSignIn() {
+  show('signin');
+  window.Clerk.mountSignIn(document.getElementById('clerk-signin'), {
+    appearance: {
+      variables: {
+        colorBackground: '#1c0f05',
+        colorText: '#F5E8D0',
+        colorPrimary: '#C4622D',
+        colorDanger: '#e05a3a',
+        colorInputBackground: 'rgba(0,0,0,0.35)',
+        colorInputText: '#F5E8D0',
+        borderRadius: '10px',
+        fontFamily: '"DM Sans", sans-serif',
+        fontSize: '14px',
+      }
+    }
+  });
+}
 
-/* ── Setup save ── */
-document.getElementById('setup-save-btn').addEventListener('click', () => {
-  const gh  = document.getElementById('gh-token-input').value.trim();
-  const ap  = document.getElementById('apify-token-input').value.trim();
-  const err = document.getElementById('setup-error');
-  if (!gh) { err.textContent='GitHub Token is required. See the hint above.'; err.style.display='block'; return; }
-  err.style.display='none';
-  saveT(gh,ap); show('hero'); setModePill(ap);
-});
+function showApp() {
+  const user  = window.Clerk.user;
+  const email = user?.primaryEmailAddress?.emailAddress || '';
+  document.getElementById('u-avatar').textContent = email.charAt(0).toUpperCase() || '?';
+  document.getElementById('u-email').textContent  = email;
+  show('hero');
+}
 
-/* ── Settings gear ── */
-document.getElementById('settings-trigger').addEventListener('click', () => {
-  const {gh,ap}=getT();
-  document.getElementById('gh-token-input').value    = gh;
-  document.getElementById('apify-token-input').value = ap;
-  show('setup');
+document.getElementById('u-signout').addEventListener('click', async () => {
+  await window.Clerk.signOut();
 });
 
 /* ── Loading steps ── */
 let stTimer;
 function startSteps() {
   ['ls-1','ls-2','ls-3'].forEach(id => document.getElementById(id).classList.remove('active','done'));
-  let i=0;
-  const ids=['ls-1','ls-2','ls-3'];
-  (function next(){ if(i>0) document.getElementById(ids[i-1]).classList.replace('active','done'); if(i<ids.length){document.getElementById(ids[i]).classList.add('active');i++;stTimer=setTimeout(next,4000);} })();
+  let i = 0;
+  const ids = ['ls-1','ls-2','ls-3'];
+  (function next() {
+    if (i > 0) document.getElementById(ids[i-1]).classList.replace('active','done');
+    if (i < ids.length) { document.getElementById(ids[i]).classList.add('active'); i++; stTimer = setTimeout(next, 4000); }
+  })();
 }
 function stopSteps() { clearTimeout(stTimer); }
 
@@ -286,66 +300,32 @@ document.getElementById('gen-form').addEventListener('submit', async e => {
   e.preventDefault();
   const niche = document.getElementById('niche-input').value.trim();
   if (!niche) { document.getElementById('niche-input').focus(); return; }
-  const {gh,ap} = getT();
-  show('loading'); startSteps();
+
+  show('loading');
+  startSteps();
+
   try {
-    const reels    = ap ? await scrape(niche,ap) : (await sleep(1400), mockReels(niche));
-    if (!reels.length) throw new Error('No reels found. Try a broader niche.');
-    const filtered = await filterR(reels, niche, gh);
-    if (!filtered.length) throw new Error('No reels passed quality filter. Try a different niche.');
-    const ideas    = await genIdeas(filtered, niche, gh);
-    if (!ideas.length) throw new Error('No ideas generated. Please try again.');
+    const token = await window.Clerk.session.getToken();
+    const res   = await fetch(BACKEND + '/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ niche }),
+    });
+
+    if (!res.ok) {
+      const d = await res.json().catch(() => ({}));
+      throw new Error(d.detail || 'Server error ' + res.status + '. Please try again.');
+    }
+
+    const { ideas } = await res.json();
+    if (!ideas?.length) throw new Error('No ideas returned. Please try again.');
     render(niche, ideas);
-  } catch(e2) {
+  } catch (err) {
     stopSteps();
-    document.getElementById('err-msg').textContent = e2.message || 'Unexpected error.';
+    document.getElementById('err-msg').textContent = err.message || 'Unexpected error.';
     show('error');
   }
 });
-
-/* ── Apify scrape ── */
-async function scrape(niche, token) {
-  const r = await fetch(APIFY_RUN, { method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token}, body:JSON.stringify({search:niche,searchType:'hashtag',resultsType:'posts',resultsLimit:30}) });
-  if (!r.ok) { const d=await r.json().catch(()=>{}); throw new Error('Apify: '+(d&&d.error&&d.error.message||r.status)+'. Check your Apify token.'); }
-  const runId = (await r.json()).data.id;
-  for (let i=0; i<36; i++) {
-    await sleep(5000);
-    const s = (await (await fetch(APIFY_RUNS+'/'+runId,{headers:{'Authorization':'Bearer '+token}})).json()).data;
-    if (s.status==='SUCCEEDED') break;
-    if (s.status==='FAILED'||s.status==='ABORTED') throw new Error('Apify scrape failed. Check your token and try again.');
-  }
-  const items = await (await fetch(APIFY_RUNS+'/'+runId+'/dataset/items?limit=50',{headers:{'Authorization':'Bearer '+token}})).json();
-  const out = items.filter(x=>x.type==='Video'||x.isVideo).map(x=>({id:x.id||'',url:x.url||'',caption:x.caption||'',viewCount:x.videoViewCount||0,likeCount:x.likesCount||0,commentCount:x.commentsCount||0,author:x.ownerUsername||''})).sort((a,b)=>b.viewCount-a.viewCount);
-  return out.length ? out : mockReels(niche);
-}
-
-/* ── AI filter (one batch call) ── */
-async function filterR(reels, niche, token) {
-  const cands = reels.filter(r => { const v=r.viewCount||1; return !(v>100000&&((r.likeCount+r.commentCount)/v)*100<0.5); });
-  if (!cands.length) return reels.slice(0,5);
-  const list = cands.map((r,i)=>`Reel ${i+1}: Caption="${r.caption}" Views=${r.viewCount} Likes=${r.likeCount} Comments=${r.commentCount}`).join('\n');
-  const prompt = `Niche: "${niche}"\n\n${cands.length} reels listed below. Return ONLY a JSON array of reel numbers to keep (relevant, real value, not spam/bait). Example: [1,3,5]\n\n${list}`;
-  const res = await fetch(GH_URL, { method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token}, body:JSON.stringify({model:'gpt-4o-mini',messages:[{role:'system',content:'Strict quality filter. Reply only with a JSON array of integers.'},{role:'user',content:prompt}],temperature:0.1}) });
-  if (!res.ok) { const d=await res.json().catch(()=>{}); throw new Error('GitHub Models error: '+(d&&d.error&&d.error.message||res.status)+'. Check your GitHub token.'); }
-  const raw = (await res.json()).choices[0].message.content.trim();
-  try { const k=JSON.parse(raw.match(/\[[\d,\s]+\]/)?.[0]||'[]'); const f=k.map(n=>cands[n-1]).filter(Boolean); return f.length?f:cands.slice(0,5); }
-  catch(_) { return cands.slice(0,5); }
-}
-
-/* ── Idea generation ── */
-async function genIdeas(reels, niche, token) {
-  const urls    = reels.map(r=>r.url).filter(Boolean);
-  const context = reels.map((r,i)=>`Reel ${i+1}:\n  URL: ${r.url}\n  Caption: ${r.caption}\n  Stats: ${r.likeCount} likes, ${r.commentCount} comments, ${r.viewCount} views`).join('\n\n');
-  const prompt  = `You are an expert Instagram content strategist.\n\nVerified viral reels in the "${niche}" niche:\n\n${context}\n\nGenerate exactly 10 unique actionable ideas. Return a JSON array of 10 objects with keys:\n- title\n- concept_explanation\n- original_viral_reel_url  (copy a URL exactly from the list above; do NOT invent one)\n- why_it_works\n- how_to_make_it_authentic\n\nReturn ONLY the JSON array, no extra text.`;
-  const res = await fetch(GH_URL, { method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token}, body:JSON.stringify({model:'gpt-4o',messages:[{role:'system',content:'Expert Instagram strategist. Return only valid JSON.'},{role:'user',content:prompt}],temperature:0.7}) });
-  if (!res.ok) { const d=await res.json().catch(()=>{}); throw new Error('Generation error: '+(d&&d.error&&d.error.message||res.status)); }
-  const raw = (await res.json()).choices[0].message.content.trim();
-  let ideas;
-  try { ideas = JSON.parse(raw.match(/\[[\s\S]*\]/)?.[0]||raw); }
-  catch(_) { throw new Error('Could not parse AI response. Please try again.'); }
-  ideas.forEach(idea => { if (!urls.includes(idea.original_viral_reel_url) && urls.length) idea.original_viral_reel_url = urls[0]; });
-  return ideas;
-}
 
 /* ── Render results ── */
 function render(niche, ideas) {
@@ -353,7 +333,7 @@ function render(niche, ideas) {
   document.getElementById('r-niche').textContent = niche;
   const grid = document.getElementById('ideas-grid');
   grid.innerHTML = '';
-  ideas.forEach((idea,i) => {
+  ideas.forEach((idea, i) => {
     const card = document.createElement('div');
     card.className = 'idea-card';
     const u = idea.original_viral_reel_url;
@@ -366,27 +346,17 @@ function render(niche, ideas) {
       ${u ? `<div class="card-field"><div class="f-label">Source reel</div><a href="${esc(u)}" target="_blank" rel="noopener" class="f-link">${esc(u)}</a></div>` : ''}
     `;
     grid.appendChild(card);
-    setTimeout(() => { card.classList.add('in'); addHover([card]); }, 80 + i*75);
+    setTimeout(() => { card.classList.add('in'); addHover([card]); }, 80 + i * 75);
   });
   show('results');
-  window.scrollTo({ top:0, behavior:'smooth' });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 /* ── Resets ── */
-document.getElementById('reset-btn').addEventListener('click', () => { document.getElementById('niche-input').value=''; show('hero'); window.scrollTo({top:0,behavior:'smooth'}); });
+document.getElementById('reset-btn').addEventListener('click', () => { document.getElementById('niche-input').value = ''; show('hero'); window.scrollTo({top:0,behavior:'smooth'}); });
 document.getElementById('err-reset').addEventListener('click', () => { show('hero'); window.scrollTo({top:0,behavior:'smooth'}); });
 
-/* ── Helpers ── */
-function mockReels(niche) {
-  const s = niche.replace(/\s+/g,'');
-  return [
-    {id:'1',url:'https://www.instagram.com/reel/mock1/',caption:`Top 3 tips for ${niche}! #viral`,viewCount:500000,likeCount:25000,commentCount:1200,author:s+'_expert'},
-    {id:'2',url:'https://www.instagram.com/reel/mock2/',caption:`You won't believe this ${niche} hack`,viewCount:1000000,likeCount:5000,commentCount:50,author:'spammy_page'},
-    {id:'3',url:'https://www.instagram.com/reel/mock3/',caption:`Why everyone is doing ${niche} wrong`,viewCount:300000,likeCount:45000,commentCount:3000,author:'real_'+s+'_creator'},
-  ];
-}
-const sleep = ms => new Promise(r => setTimeout(r, ms));
-function esc(s) { const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
 </script>
 </body>
 </html>
