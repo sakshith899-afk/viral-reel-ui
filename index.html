@@ -125,6 +125,34 @@
     .reset-btn { display: flex; align-items: center; gap: 8px; margin: 52px auto 0; background: transparent; border: 1px solid var(--glass-border); border-radius: 100px; padding: 13px 26px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 300; color: var(--text-sec); cursor: none; transition: border-color .3s, color .3s; }
     .reset-btn:hover { border-color: rgba(212,131,74,.38); color: var(--sand); }
 
+    /* CONFIRM NICHE (profile mode step 2) */
+    #confirm-state { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 80px 24px; }
+    .confirm-card { width: 100%; max-width: 560px; background: var(--glass); border: 1px solid var(--glass-border); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); border-radius: 22px; padding: 36px 32px; }
+    .confirm-eyebrow { font-size: 10px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--amber); margin-bottom: 12px; }
+    .confirm-title { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 300; color: var(--cream); margin-bottom: 6px; line-height: 1.25; }
+    .confirm-sub { font-size: 12.5px; font-weight: 300; color: var(--text-mute); margin-bottom: 28px; line-height: 1.6; }
+    .confirm-field { margin-bottom: 20px; }
+    .confirm-label { font-size: 10px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--amber); margin-bottom: 8px; display: flex; align-items: center; gap: 7px; }
+    .confirm-label::before { content: ''; width: 3px; height: 3px; border-radius: 50%; background: var(--amber); opacity: .7; }
+    .confirm-input { width: 100%; background: rgba(255,200,135,.05); border: 1px solid var(--glass-border); border-radius: 10px; padding: 11px 14px; font-family: 'DM Sans', sans-serif; font-size: 13.5px; font-weight: 300; color: var(--cream); outline: none; transition: border-color .3s; }
+    .confirm-input:focus { border-color: rgba(212,131,74,.42); }
+    .hashtag-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
+    .hashtag-chip { display: inline-flex; align-items: center; gap: 6px; background: rgba(196,98,45,.12); border: 1px solid rgba(196,98,45,.25); border-radius: 100px; padding: 5px 12px; font-size: 12px; color: var(--sand); }
+    .hashtag-chip button { background: none; border: none; color: var(--text-mute); cursor: none; font-size: 13px; line-height: 1; padding: 0; transition: color .2s; }
+    .hashtag-chip button:hover { color: var(--terracotta); }
+    .hashtag-add { display: flex; gap: 8px; margin-top: 8px; }
+    .hashtag-add-input { flex: 1; background: rgba(255,200,135,.05); border: 1px solid var(--glass-border); border-radius: 8px; padding: 8px 12px; font-family: 'DM Sans', sans-serif; font-size: 12.5px; color: var(--cream); outline: none; transition: border-color .3s; }
+    .hashtag-add-input:focus { border-color: rgba(212,131,74,.4); }
+    .hashtag-add-btn { background: rgba(196,98,45,.18); border: 1px solid rgba(196,98,45,.3); border-radius: 8px; padding: 8px 14px; font-size: 12px; color: var(--sand); cursor: none; transition: background .22s; }
+    .hashtag-add-btn:hover { background: rgba(196,98,45,.28); }
+    .confirm-actions { display: flex; gap: 10px; margin-top: 28px; }
+    .confirm-go { flex: 1; position: relative; overflow: hidden; background: var(--terracotta); border: none; border-radius: 12px; padding: 15px; font-family: 'DM Sans', sans-serif; font-size: 13.5px; font-weight: 500; color: var(--cream); cursor: none; transition: transform .14s; }
+    .confirm-go::before { content: ''; position: absolute; inset: 0; background: var(--sienna); transform: scaleX(0); transform-origin: left; transition: transform .44s cubic-bezier(.77,0,.18,1); }
+    .confirm-go:hover::before { transform: scaleX(1); }
+    .confirm-go span { position: relative; z-index: 1; }
+    .confirm-back { background: transparent; border: 1px solid var(--glass-border); border-radius: 12px; padding: 15px 20px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text-mute); cursor: none; transition: border-color .3s, color .3s; }
+    .confirm-back:hover { border-color: rgba(212,131,74,.3); color: var(--text-sec); }
+
     /* ERROR */
     #error-state { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 80px 24px; text-align: center; }
     .err-icon { width: 60px; height: 60px; border: 1px solid rgba(196,98,45,.35); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 28px; color: var(--terracotta); font-size: 22px; }
@@ -211,6 +239,31 @@
     </div>
   </section>
 
+  <!-- CONFIRM NICHE (profile mode step 2) -->
+  <section id="confirm-state">
+    <div class="confirm-card">
+      <div class="confirm-eyebrow">Profile Analysed</div>
+      <h2 class="confirm-title">Does this look right?</h2>
+      <p class="confirm-sub">We detected your niche from your profile. Edit anything that looks off before we search for viral content.</p>
+      <div class="confirm-field">
+        <div class="confirm-label">Detected niche</div>
+        <input type="text" class="confirm-input" id="confirm-niche-input" placeholder="Your niche">
+      </div>
+      <div class="confirm-field">
+        <div class="confirm-label">Research hashtags <span style="font-weight:300;text-transform:none;letter-spacing:0;color:var(--text-mute);font-size:10px;">(we'll search viral content on these)</span></div>
+        <div class="hashtag-list" id="hashtag-list"></div>
+        <div class="hashtag-add">
+          <input type="text" class="hashtag-add-input" id="hashtag-add-input" placeholder="Add hashtag…" maxlength="40">
+          <button type="button" class="hashtag-add-btn" id="hashtag-add-btn">+ Add</button>
+        </div>
+      </div>
+      <div class="confirm-actions">
+        <button type="button" class="confirm-back" id="confirm-back">&#8592; Back</button>
+        <button type="button" class="confirm-go" id="confirm-go"><span>Generate Ideas &rarr;</span></button>
+      </div>
+    </div>
+  </section>
+
   <section id="loading-state">
     <div class="loader-ring">
       <svg viewBox="0 0 76 76">
@@ -263,6 +316,7 @@ addHover(document.querySelectorAll('a,button,input'));
 const St = {
   signin:  document.getElementById('signin-state'),
   hero:    document.getElementById('hero-state'),
+  confirm: document.getElementById('confirm-state'),
   loading: document.getElementById('loading-state'),
   results: document.getElementById('results-state'),
   error:   document.getElementById('error-state'),
@@ -270,10 +324,11 @@ const St = {
 function show(n) {
   St.signin.style.display  = n==='signin'  ? 'flex'  : 'none';
   St.hero.style.display    = n==='hero'    ? 'flex'  : 'none';
+  St.confirm.style.display = n==='confirm' ? 'flex'  : 'none';
   St.loading.style.display = n==='loading' ? 'flex'  : 'none';
   St.results.style.display = n==='results' ? 'block' : 'none';
   St.error.style.display   = n==='error'   ? 'flex'  : 'none';
-  document.getElementById('user-header').style.display = ['hero','results','error'].includes(n) ? 'flex' : 'none';
+  document.getElementById('user-header').style.display = ['hero','confirm','results','error'].includes(n) ? 'flex' : 'none';
 }
 
 /* ── Clerk init ── */
@@ -323,14 +378,16 @@ document.getElementById('tab-profile').addEventListener('click', () => {
 
 /* ── Loading steps ── */
 let stTimer;
-const STEP_IDS = ['ls-1','ls-2','ls-3','ls-4'];
-function startSteps(isProfile) {
-  document.getElementById('ls-1').textContent = isProfile ? 'Analysing your profile…' : 'Expanding hashtags…';
-  STEP_IDS.forEach(id => document.getElementById(id).classList.remove('active','done'));
+const STEP_IDS_FULL    = ['ls-1','ls-2','ls-3','ls-4'];
+const STEP_IDS_PROFILE = ['ls-1'];
+function startSteps(isProfileAnalysis) {
+  const ids = isProfileAnalysis ? STEP_IDS_PROFILE : STEP_IDS_FULL;
+  document.getElementById('ls-1').textContent = isProfileAnalysis ? 'Analysing your profile…' : 'Expanding hashtags…';
+  STEP_IDS_FULL.forEach(id => document.getElementById(id).classList.remove('active','done'));
   let i = 0;
   (function next() {
-    if (i > 0) document.getElementById(STEP_IDS[i-1]).classList.replace('active','done');
-    if (i < STEP_IDS.length) { document.getElementById(STEP_IDS[i]).classList.add('active'); i++; stTimer = setTimeout(next, 5000); }
+    if (i > 0) { const prev = document.getElementById(ids[i-1]); if (prev) prev.classList.replace('active','done'); }
+    if (i < ids.length) { document.getElementById(ids[i]).classList.add('active'); i++; stTimer = setTimeout(next, 5000); }
   })();
 }
 function stopSteps() { clearTimeout(stTimer); }
@@ -368,15 +425,83 @@ document.getElementById('gen-form').addEventListener('submit', async e => {
   await handleSubmit({ niche }, false);
 });
 
-/* ── Profile form ── */
+/* ── Profile form — step 1: analyse ── */
+let _confirmedNiche = '';
+let _confirmedHashtags = [];
+
 document.getElementById('profile-form').addEventListener('submit', async e => {
   e.preventDefault();
   const url = document.getElementById('profile-input').value.trim();
-  if (!url || !url.includes('instagram.com/')) {
-    document.getElementById('profile-input').focus();
-    return;
+  if (!url || !url.includes('instagram.com/')) { document.getElementById('profile-input').focus(); return; }
+
+  show('loading');
+  startSteps(true);
+
+  try {
+    const token = await window.Clerk.session.getToken();
+    const res   = await fetch(BACKEND + '/analyse-profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ instagram_url: url }),
+    });
+    if (!res.ok) {
+      const d = await res.json().catch(()=>({}));
+      throw new Error(d.detail || 'Could not analyse profile. Make sure it\'s public.');
+    }
+    stopSteps();
+    const data = await res.json();
+    showConfirm(data.derived_niche, data.hashtags);
+  } catch (err) {
+    stopSteps();
+    document.getElementById('err-msg').textContent = err.message;
+    show('error');
   }
-  await handleSubmit({ instagram_url: url }, true);
+});
+
+/* ── Confirm niche UI ── */
+function showConfirm(niche, hashtags) {
+  _confirmedNiche    = niche;
+  _confirmedHashtags = [...hashtags];
+  document.getElementById('confirm-niche-input').value = niche;
+  renderHashtagChips();
+  show('confirm');
+}
+
+function renderHashtagChips() {
+  const list = document.getElementById('hashtag-list');
+  list.innerHTML = '';
+  _confirmedHashtags.forEach((tag, i) => {
+    const chip = document.createElement('div');
+    chip.className = 'hashtag-chip';
+    chip.innerHTML = `#${esc(tag)} <button type="button" data-i="${i}" title="Remove">&#215;</button>`;
+    chip.querySelector('button').addEventListener('click', () => {
+      _confirmedHashtags.splice(i, 1);
+      renderHashtagChips();
+    });
+    list.appendChild(chip);
+  });
+}
+
+document.getElementById('hashtag-add-btn').addEventListener('click', () => {
+  const inp = document.getElementById('hashtag-add-input');
+  const tag = inp.value.trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
+  if (tag && !_confirmedHashtags.includes(tag)) {
+    _confirmedHashtags.push(tag);
+    renderHashtagChips();
+  }
+  inp.value = '';
+});
+document.getElementById('hashtag-add-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); document.getElementById('hashtag-add-btn').click(); }
+});
+
+document.getElementById('confirm-back').addEventListener('click', () => { show('hero'); });
+
+document.getElementById('confirm-go').addEventListener('click', async () => {
+  const niche = document.getElementById('confirm-niche-input').value.trim();
+  if (!niche || !_confirmedHashtags.length) return;
+  _confirmedNiche    = niche;
+  await handleSubmit({ niche, confirmed_hashtags: _confirmedHashtags }, false);
 });
 
 /* ── Render results ── */
